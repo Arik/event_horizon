@@ -49,6 +49,9 @@ namespace Gui.StarMap
         [SerializeField] private Toggle BossFilterToggle;
         [SerializeField] private Toggle ShopFilterToggle;
         [SerializeField] private Toggle ArenaFilterToggle;
+        [SerializeField] private Toggle SurvivalFilterToggle;
+        [SerializeField] private Toggle ChallengeFilterToggle;
+        [SerializeField] private Toggle RuinFilterToggle;
         [SerializeField] private Toggle XmasFilterToggle;
 
         public void ShowInformation() { InformationPanel.Open(); }
@@ -87,6 +90,9 @@ namespace Gui.StarMap
             _starMap.ShowStores = ShopFilterToggle.isOn;
             _starMap.ShowBookmarks = BookmarkFilterToggle.isOn;
             _starMap.ShowArenas = ArenaFilterToggle.isOn;
+            _starMap.ShowSurvivals = SurvivalFilterToggle.isOn;
+            _starMap.ShowChallenges = ChallengeFilterToggle.isOn;
+            _starMap.ShowRuins = RuinFilterToggle.isOn;
             _starMap.ShowXmas = XmasFilterToggle.isOn && _holidayManager.IsChristmas;
             _messenger.Broadcast(EventType.StarMapChanged);
         }

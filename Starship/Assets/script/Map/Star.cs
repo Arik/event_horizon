@@ -35,6 +35,9 @@ public class Star : MonoBehaviour
     public GameObject MiniBossIcon;
     public GameObject MiniShopIcon;
     public GameObject MiniArenaIcon;
+    public GameObject MiniSurvivalIcon;
+    public GameObject MiniChallengeIcon;
+    public GameObject MiniRuinIcon;
     public GameObject MiniQuestObjective;
     public GameObject MiniXmasIcon;
     public GameObject PandemicIcon;
@@ -121,6 +124,11 @@ public class Star : MonoBehaviour
 		    if (objects.Contain(StarObjectType.Survival))
 			{
 				AddIcon(DangerIconPrefab);
+				if (_starMap.ShowSurvivals)
+				{
+					AddIcon(MiniSurvivalIcon);
+					_showMiniStarOnGalaxyMap = false;
+				}
 			}
 			else if (objects.Contain(StarObjectType.Boss) && !star.Boss.IsDefeated)
 			{
@@ -134,6 +142,11 @@ public class Star : MonoBehaviour
 			else if (objects.Contain(StarObjectType.Ruins) && !star.Ruins.IsDefeated)
 			{
 				AddIcon(RuinsIconPrefab);
+				if (_starMap.ShowRuins)
+				{
+					AddIcon(MiniRuinIcon);
+					_showMiniStarOnGalaxyMap = false;
+				}
 			}
             else if (objects.Contain(StarObjectType.Xmas))
             {
@@ -160,6 +173,11 @@ public class Star : MonoBehaviour
             else if (objects.Contain(StarObjectType.Challenge) && !star.Challenge.IsCompleted)
 			{
 				AddIcon(ChallengeIconPrefab);
+				if (_starMap.ShowChallenges)
+				{
+				AddIcon(MiniChallengeIcon);
+				_showMiniStarOnGalaxyMap = false;
+				}
 			}
 			//else if (star.HasPointOfInterest(Game.PointOfInterest.Laboratory))
 			//{

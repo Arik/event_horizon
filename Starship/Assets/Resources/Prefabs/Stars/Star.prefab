@@ -81,6 +81,12 @@ MonoBehaviour:
     type: 3}
   MiniArenaIcon: {fileID: 1000010971585852, guid: af29b75dca02fae428c5087eead0fe30,
     type: 3}
+  MiniSurvivalIcon: {fileID: 260013624700621112, guid: e80ffec9b7c49794dad004b98d1bdeaa,
+    type: 3}
+  MiniChallengeIcon: {fileID: 5581895028985097442, guid: b9c638294c18ca343a61e1af5a599b74,
+    type: 3}
+  MiniRuinIcon: {fileID: 7955862799455011136, guid: 2043c3efe9634784ab2176324cd7eadd,
+    type: 3}
   MiniQuestObjective: {fileID: 1209897682380394, guid: 2a7e298fe8b23ae4fbfeb73dbf701e0f,
     type: 3}
   MiniXmasIcon: {fileID: 1000012415260514, guid: abd35b188edef9543adddd88d119eac2,
