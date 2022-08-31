@@ -17,7 +17,8 @@ public class Star : MonoBehaviour
 	public GameObject QuestIconPrefab;
 	public GameObject DangerIconPrefab;
 	public GameObject FactionIconPrefab;
-	public GameObject WormholeIconPrefab;
+    public GameObject FilterIconPrefab;
+    public GameObject WormholeIconPrefab;
 	public GameObject MultiplayerIconPrefab;
 	public GameObject ArenaIconPrefab;
 	public GameObject LabIconPrefab;
@@ -94,19 +95,26 @@ public class Star : MonoBehaviour
 			var starname = AddIcon(StarNamePrefab).GetComponent<TextMesh>();
 			starname.text = string.IsNullOrEmpty(star.Bookmark) ? star.Name : star.Bookmark;
             starname.color = color;
+            var objects = star.Objects;
 
-			if (star.HasStarBase)
+            if (star.HasStarBase)
 			{
 				AddIcon(FactionIconPrefab).GetComponent<StarIcon>().SetColor(color);
 				AddStarInfo(star);
 			    _showMiniStarOnGalaxyMap = false;
-			}
+			} else if (star.IsFiltered)
+            {
+                AddIcon(FilterIconPrefab).GetComponent<StarIcon>().SetColor(color);
+                if (star.HasBookmark)
+                    AddStarBookmark(star);
+                _showMiniStarOnGalaxyMap = false;
+            }
             else if (_showMiniStarOnGalaxyMap && star.HasBookmark)
             {
                 AddStarBookmark(star);
             }
 
-		    var guardian = star.Occupant;
+            var guardian = star.Occupant;
 		    if (guardian.IsExists)
 		    {
 		        if (guardian.CanBeAggressive)
@@ -114,8 +122,6 @@ public class Star : MonoBehaviour
                 else
                     AddIcon(PassiveGuardianIconPrefab);
             }
-
-            var objects = star.Objects;
 
 		    if (objects.Contain(StarObjectType.Event) && star.LocalEvent.IsActive)
 		    {

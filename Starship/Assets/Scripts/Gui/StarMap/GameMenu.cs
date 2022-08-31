@@ -53,6 +53,7 @@ namespace Gui.StarMap
         [SerializeField] private Toggle ChallengeFilterToggle;
         [SerializeField] private Toggle RuinFilterToggle;
         [SerializeField] private Toggle XmasFilterToggle;
+        [SerializeField] private InputField FilterInput;
 
         public void ShowInformation() { InformationPanel.Open(); }
         public void ShowCargoHold() { CargoHoldPanel.Open(); }
@@ -82,6 +83,12 @@ namespace Gui.StarMap
         public void ShowStarSystem(bool visible)
         {
             _motherShip.ViewMode = visible ? ViewMode.StarSystem : ViewMode.StarMap;
+        }
+        
+        public void OnFilterInputChanged()
+        {
+            _starMap.SetFilter(FilterInput.text);
+            _messenger.Broadcast(EventType.StarMapChanged);
         }
 
         public void OnFiltersChanged()

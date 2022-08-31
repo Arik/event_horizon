@@ -51,6 +51,11 @@ namespace Galaxy
         public bool ShowRuins { get; set; }
         public bool ShowXmas { get; set; }
 
+        public void SetFilter(string filter)
+        {
+            _starData.Filter = filter;
+        }
+
         public int GetNearestVisited(int starId, bool shoulBeSafe = false)
         {
             var center = _starData.GetPosition(starId);
@@ -114,6 +119,8 @@ namespace Galaxy
             if (!_starData.IsVisited(starId))
                 return false;
             if (ShowBookmarks && _starData.HasBookmark(starId))
+                return true;
+            if (_starData.IsFiltered(starId))
                 return true;
             if (_starData.HasStarBase(starId))
                 return true;

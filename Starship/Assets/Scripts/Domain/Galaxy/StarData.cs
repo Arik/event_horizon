@@ -1,10 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Economy;
+using Economy.Products;
 using Galaxy.StarContent;
 using Game;
+using Game.Exploration;
 using GameDatabase.DataModel;
 using GameModel;
+using GameModel.Quests;
 using GameServices;
 using GameServices.Quests;
 using GameServices.Random;
@@ -37,6 +40,9 @@ namespace Galaxy
         [Inject] private readonly XmasTree _xmas;
         [Inject] private readonly Hive _hive;
 
+        [Inject] private readonly InventoryFactory _inventoryFactory;
+        [Inject] private readonly Planet.Factory _planetFactory;
+
         [Inject]
         public StarData(ISessionData session, SessionDataLoadedSignal dataLoadedSignal, SessionCreatedSignal sessionCreatedSignal)
             : base(dataLoadedSignal, sessionCreatedSignal)
@@ -57,7 +63,59 @@ namespace Galaxy
             _starContentChangedTrigger.Fire(starId);
         }
 
+        public void SetFiltered(int starId)
+        {
+            _filteredstars[starId] = ShouldFilter(starId) && _filter != "";
+            // _starContentChangedTrigger.Fire(starId);
+        }
+
+        private string _filter = "";
+        private Dictionary<int, bool> _filteredstars = new Dictionary<int, bool>();
+
+        public string Filter
+        {
+            get { return _filter; }
+            set
+            {
+                if (value == _filter)
+                    return;
+
+                _filter = value;
+                _filteredstars.Clear();
+            }
+        }
+
+        public bool ShouldFilter(int starId)
+        {
+            if (GetBookmark(starId) == _filter) return true;
+
+            if (_filter.ToLower().Contains("terran"))
+            {
+                foreach (Planet planet in _planetFactory.CreatePlanets(starId))
+                {
+                    if (planet.Type == PlanetType.Terran) return true;
+                }
+            }
+
+            if (GetObjects(starId).Contain(StarObjectType.BlackMarket))
+            {
+                foreach (IProduct product in _inventoryFactory.CreateBlackMarketInventory(starId).Items)
+                {
+                    if (_filter.ToLower().Contains(product.Type.Name.ToLower()) || _filter.ToLower().Contains(product.Type.Id.ToLower())) return true;
+                }
+            }
+
+            return false;
+        }
+
         public bool HasBookmark(int starId) { return _session.StarMap.HasBookmark(starId); }
+
+        public bool IsFiltered(int starId)
+        {
+            if (!_filteredstars.ContainsKey(starId))
+                SetFiltered(starId);
+            return _filteredstars[starId];
+        }
 
         public Region GetRegion(int starId) { return _regionMap.GetStarRegion(starId); }
 
