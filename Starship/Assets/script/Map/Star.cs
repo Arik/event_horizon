@@ -181,8 +181,8 @@ public class Star : MonoBehaviour
 				AddIcon(ChallengeIconPrefab);
 				if (_starMap.ShowChallenges)
 				{
-				AddIcon(MiniChallengeIcon);
-				_showMiniStarOnGalaxyMap = false;
+				    AddIcon(MiniChallengeIcon);
+				    _showMiniStarOnGalaxyMap = false;
 				}
 			}
 			//else if (star.HasPointOfInterest(Game.PointOfInterest.Laboratory))

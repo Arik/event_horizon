@@ -89,6 +89,8 @@ namespace Galaxy
         {
             if (GetBookmark(starId) == _filter) return true;
 
+            var objects = GetObjects(starId);
+
             if (_filter.ToLower().Contains("terran"))
             {
                 foreach (Planet planet in _planetFactory.CreatePlanets(starId))
@@ -97,9 +99,22 @@ namespace Galaxy
                 }
             }
 
-            if (GetObjects(starId).Contain(StarObjectType.BlackMarket))
+            if (_filter.ToLower().Contains("event"))
+            {
+                if (objects.Contain(StarObjectType.Event) && GetLocalEvent(starId).IsActive) return true;
+            }
+
+            if (objects.Contain(StarObjectType.BlackMarket))
             {
                 foreach (IProduct product in _inventoryFactory.CreateBlackMarketInventory(starId).Items)
+                {
+                    if (_filter.ToLower().Contains(product.Type.Name.ToLower()) || _filter.ToLower().Contains(product.Type.Id.ToLower())) return true;
+                }
+            }
+
+            if (HasStarBase(starId))
+            {
+                foreach (IProduct product in _inventoryFactory.CreateFactionInventory(GetRegion(starId)).Items)
                 {
                     if (_filter.ToLower().Contains(product.Type.Name.ToLower()) || _filter.ToLower().Contains(product.Type.Id.ToLower())) return true;
                 }
