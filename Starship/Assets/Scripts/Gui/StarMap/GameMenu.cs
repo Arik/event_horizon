@@ -52,6 +52,7 @@ namespace Gui.StarMap
         [SerializeField] private Toggle SurvivalFilterToggle;
         [SerializeField] private Toggle ChallengeFilterToggle;
         [SerializeField] private Toggle RuinFilterToggle;
+        [SerializeField] private Toggle WormholeFilterToggle;
         [SerializeField] private Toggle XmasFilterToggle;
         [SerializeField] private InputField FilterInput;
 
@@ -100,6 +101,7 @@ namespace Gui.StarMap
             _starMap.ShowSurvivals = SurvivalFilterToggle.isOn;
             _starMap.ShowChallenges = ChallengeFilterToggle.isOn;
             _starMap.ShowRuins = RuinFilterToggle.isOn;
+            _starMap.ShowWormholes = WormholeFilterToggle.isOn;
             _starMap.ShowXmas = XmasFilterToggle.isOn && _holidayManager.IsChristmas;
             _messenger.Broadcast(EventType.StarMapChanged);
         }

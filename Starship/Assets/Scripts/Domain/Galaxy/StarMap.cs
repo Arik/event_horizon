@@ -49,6 +49,7 @@ namespace Galaxy
         public bool ShowSurvivals { get; set; }
         public bool ShowChallenges { get; set; }
         public bool ShowRuins { get; set; }
+        public bool ShowWormholes { get; set; }
         public bool ShowXmas { get; set; }
 
         public void SetFilter(string filter)
@@ -135,6 +136,8 @@ namespace Galaxy
             if (ShowChallenges && objects.Contain(StarObjectType.Challenge) && !_starData.GetChallenge(starId).IsCompleted)
                 return true;
             if (ShowRuins && objects.Contain(StarObjectType.Ruins) && !_starData.GetRuins(starId).IsDefeated)
+                return true;
+            if (ShowWormholes && objects.Contain(StarObjectType.Wormhole))
                 return true;
             if (ShowBosses && objects.Contain(StarObjectType.Boss) && !_starData.GetBoss(starId).IsDefeated)
                 return true;

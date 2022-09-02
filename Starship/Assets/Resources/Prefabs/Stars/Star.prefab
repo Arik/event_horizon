@@ -89,6 +89,8 @@ MonoBehaviour:
     type: 3}
   MiniRuinIcon: {fileID: 7955862799455011136, guid: 2043c3efe9634784ab2176324cd7eadd,
     type: 3}
+  MiniWormholeIcon: {fileID: 2082953945565261542, guid: fcab82f06e9e04b43b4c6e36ea5edfaf,
+    type: 3}
   MiniQuestObjective: {fileID: 1209897682380394, guid: 2a7e298fe8b23ae4fbfeb73dbf701e0f,
     type: 3}
   MiniXmasIcon: {fileID: 1000012415260514, guid: abd35b188edef9543adddd88d119eac2,

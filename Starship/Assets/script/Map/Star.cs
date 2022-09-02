@@ -39,6 +39,7 @@ public class Star : MonoBehaviour
     public GameObject MiniSurvivalIcon;
     public GameObject MiniChallengeIcon;
     public GameObject MiniRuinIcon;
+    public GameObject MiniWormholeIcon;
     public GameObject MiniQuestObjective;
     public GameObject MiniXmasIcon;
     public GameObject PandemicIcon;
@@ -54,6 +55,7 @@ public class Star : MonoBehaviour
     [Inject] private readonly ILocalization _localization;
     [Inject] private readonly MotherShip _motherShip;
     [Inject] private readonly StarMap _starMap;
+    [Inject] private readonly StarData _starData;
 
     public void Initialize(Galaxy.Star star)
 	{
@@ -168,7 +170,19 @@ public class Star : MonoBehaviour
             else if (objects.Contain(StarObjectType.Wormhole))
 			{
 				AddIcon(WormholeIconPrefab);
-			}
+                if (_starMap.ShowWormholes)
+                {
+                    var icon = AddIcon(MiniWormholeIcon).GetComponent<StarIcon>();
+                    if (_starData.IsVisited(star.Wormhole.Target)) {
+                        icon.SetColor(Utils.ColorManip.ColorHash(System.Math.Min(_starId, star.Wormhole.Target).ToString()));
+                    }
+                    else
+                    {
+                        icon.SetColor(WormholeIconPrefab.GetComponent<StarIcon>().Color);
+                    }
+                    _showMiniStarOnGalaxyMap = false;
+                }
+            }
 			else if (objects.Contain(StarObjectType.Arena))
 			{
 				AddIcon(ArenaIconPrefab);
