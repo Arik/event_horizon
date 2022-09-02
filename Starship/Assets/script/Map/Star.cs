@@ -97,18 +97,20 @@ public class Star : MonoBehaviour
             starname.color = color;
             var objects = star.Objects;
 
+            if (star.IsFiltered)
+            {
+                AddIcon(FilterIconPrefab).GetComponent<StarIcon>().SetColor(color);
+                if (!star.HasStarBase && star.HasBookmark)
+                    AddStarBookmark(star);
+                _showMiniStarOnGalaxyMap = false;
+            }
+
             if (star.HasStarBase)
 			{
 				AddIcon(FactionIconPrefab).GetComponent<StarIcon>().SetColor(color);
 				AddStarInfo(star);
 			    _showMiniStarOnGalaxyMap = false;
-			} else if (star.IsFiltered)
-            {
-                AddIcon(FilterIconPrefab).GetComponent<StarIcon>().SetColor(color);
-                if (star.HasBookmark)
-                    AddStarBookmark(star);
-                _showMiniStarOnGalaxyMap = false;
-            }
+			}
             else if (_showMiniStarOnGalaxyMap && star.HasBookmark)
             {
                 AddStarBookmark(star);
