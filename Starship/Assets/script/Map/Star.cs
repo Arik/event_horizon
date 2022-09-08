@@ -99,7 +99,7 @@ public class Star : MonoBehaviour
             starname.color = color;
             var objects = star.Objects;
 
-            if (star.IsFiltered)
+            if (star.IsFiltered)  // TODO: Misses home star
             {
                 AddIcon(FilterIconPrefab).GetComponent<StarIcon>().SetColor(color);
                 if (!star.HasStarBase && star.HasBookmark)

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Economy;
 using Economy.Products;
 using Galaxy.StarContent;
@@ -91,7 +92,7 @@ namespace Galaxy
 
             var objects = GetObjects(starId);
 
-            if (_filter.ToLower().Contains("terran"))
+            if (new Regex("(\\s|^)terran(\\s|$)").IsMatch(_filter))
             {
                 foreach (Planet planet in _planetFactory.CreatePlanets(starId))
                 {
@@ -99,7 +100,7 @@ namespace Galaxy
                 }
             }
 
-            if (_filter.ToLower().Contains("event"))
+            if (new Regex("(\\s|^)event(\\s|$)").IsMatch(_filter))
             {
                 if (objects.Contain(StarObjectType.Event) && GetLocalEvent(starId).IsActive) return true;
             }
@@ -108,7 +109,7 @@ namespace Galaxy
             {
                 foreach (IProduct product in _inventoryFactory.CreateBlackMarketInventory(starId).Items)
                 {
-                    if (_filter.ToLower().Contains(product.Type.Name.ToLower()) || _filter.ToLower().Contains(product.Type.Id.ToLower())) return true;
+                    if (new Regex("(\\s|^)("+ product.Type.Name.ToLower() + "|"+ product.Type.Id.ToLower() + ")(\\s|$)").IsMatch(_filter)) return true;
                 }
             }
 
@@ -116,7 +117,7 @@ namespace Galaxy
             {
                 foreach (IProduct product in _inventoryFactory.CreateFactionInventory(GetRegion(starId)).Items)
                 {
-                    if (_filter.ToLower().Contains(product.Type.Name.ToLower()) || _filter.ToLower().Contains(product.Type.Id.ToLower())) return true;
+                    if (new Regex("(\\s|^)(" + product.Type.Name.ToLower() + "|" + product.Type.Id.ToLower() + ")(\\s|$)").IsMatch(_filter)) return true;
                 }
             }
 
