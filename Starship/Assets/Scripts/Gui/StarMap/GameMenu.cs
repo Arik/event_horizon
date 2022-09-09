@@ -48,7 +48,12 @@ namespace Gui.StarMap
         [SerializeField] private Toggle BossFilterToggle;
         [SerializeField] private Toggle ShopFilterToggle;
         [SerializeField] private Toggle ArenaFilterToggle;
+        [SerializeField] private Toggle SurvivalFilterToggle;
+        [SerializeField] private Toggle ChallengeFilterToggle;
+        [SerializeField] private Toggle RuinFilterToggle;
+        [SerializeField] private Toggle WormholeFilterToggle;
         [SerializeField] private Toggle XmasFilterToggle;
+        [SerializeField] private InputField FilterInput;
 
         public void ShowInformation() { InformationPanel.Open(); }
         public void ShowCargoHold() { CargoHoldPanel.Open(); }
@@ -78,6 +83,12 @@ namespace Gui.StarMap
         {
             _motherShip.ViewMode = visible ? ViewMode.StarSystem : ViewMode.StarMap;
         }
+        
+        public void OnFilterInputChanged()
+        {
+            _starMap.SetFilter(FilterInput.text);
+            _messenger.Broadcast(EventType.StarMapChanged);
+        }
 
         public void OnFiltersChanged()
         {
@@ -85,6 +96,10 @@ namespace Gui.StarMap
             _starMap.ShowStores = ShopFilterToggle.isOn;
             _starMap.ShowBookmarks = BookmarkFilterToggle.isOn;
             _starMap.ShowArenas = ArenaFilterToggle.isOn;
+            _starMap.ShowSurvivals = SurvivalFilterToggle.isOn;
+            _starMap.ShowChallenges = ChallengeFilterToggle.isOn;
+            _starMap.ShowRuins = RuinFilterToggle.isOn;
+            _starMap.ShowWormholes = WormholeFilterToggle.isOn;
             _starMap.ShowXmas = XmasFilterToggle.isOn && _holidayManager.IsChristmas;
             _messenger.Broadcast(EventType.StarMapChanged);
         }

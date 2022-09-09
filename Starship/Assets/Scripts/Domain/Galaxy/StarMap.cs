@@ -46,7 +46,16 @@ namespace Galaxy
         public bool ShowStores { get; set; }
         public bool ShowBookmarks { get; set; }
         public bool ShowArenas { get; set; }
+        public bool ShowSurvivals { get; set; }
+        public bool ShowChallenges { get; set; }
+        public bool ShowRuins { get; set; }
+        public bool ShowWormholes { get; set; }
         public bool ShowXmas { get; set; }
+
+        public void SetFilter(string filter)
+        {
+            _starData.Filter = filter;
+        }
 
         public int GetNearestVisited(int starId, bool shoulBeSafe = false)
         {
@@ -112,6 +121,8 @@ namespace Galaxy
                 return false;
             if (ShowBookmarks && _starData.HasBookmark(starId))
                 return true;
+            if (_starData.IsFiltered(starId))
+                return true;
             if (_starData.HasStarBase(starId))
                 return true;
 
@@ -119,6 +130,14 @@ namespace Galaxy
             if (ShowStores && objects.Contain(StarObjectType.BlackMarket))
                 return true;
             if (ShowArenas && objects.Contain(StarObjectType.Arena))
+                return true;
+            if (ShowSurvivals && objects.Contain(StarObjectType.Survival))
+                return true;
+            if (ShowChallenges && objects.Contain(StarObjectType.Challenge) && !_starData.GetChallenge(starId).IsCompleted)
+                return true;
+            if (ShowRuins && objects.Contain(StarObjectType.Ruins) && !_starData.GetRuins(starId).IsDefeated)
+                return true;
+            if (ShowWormholes && objects.Contain(StarObjectType.Wormhole))
                 return true;
             if (ShowBosses && objects.Contain(StarObjectType.Boss) && !_starData.GetBoss(starId).IsDefeated)
                 return true;

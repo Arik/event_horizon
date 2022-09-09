@@ -19,7 +19,8 @@ public class Star : MonoBehaviour
 	public GameObject QuestIconPrefab;
 	public GameObject DangerIconPrefab;
 	public GameObject FactionIconPrefab;
-	public GameObject WormholeIconPrefab;
+    public GameObject FilterIconPrefab;
+    public GameObject WormholeIconPrefab;
 	public GameObject MultiplayerIconPrefab;
 	public GameObject ArenaIconPrefab;
 	public GameObject LabIconPrefab;
@@ -37,6 +38,10 @@ public class Star : MonoBehaviour
     public GameObject MiniBossIcon;
     public GameObject MiniShopIcon;
     public GameObject MiniArenaIcon;
+    public GameObject MiniSurvivalIcon;
+    public GameObject MiniChallengeIcon;
+    public GameObject MiniRuinIcon;
+    public GameObject MiniWormholeIcon;
     public GameObject MiniQuestObjective;
     public GameObject MiniXmasIcon;
     public GameObject PandemicIcon;
@@ -52,6 +57,7 @@ public class Star : MonoBehaviour
     [Inject] private readonly ILocalization _localization;
     [Inject] private readonly MotherShip _motherShip;
     [Inject] private readonly StarMap _starMap;
+    [Inject] private readonly StarData _starData;
 
     public void Initialize(Galaxy.Star star)
 	{
@@ -91,10 +97,20 @@ public class Star : MonoBehaviour
 		else if (star.IsVisited)
 		{
 			var starname = AddIcon(StarNamePrefab).GetComponent<TextMesh>();
+
 			starname.text = string.IsNullOrEmpty(star.Bookmark) ? star.Name : star.Bookmark;
             starname.color = color;
+            var objects = star.Objects;
 
-			if (star.HasStarBase)
+            if (star.IsFiltered)  // TODO: Misses home star
+            {
+                AddIcon(FilterIconPrefab).GetComponent<StarIcon>().SetColor(color);
+                if (!star.HasStarBase && star.HasBookmark)
+                    AddStarBookmark(star);
+                _showMiniStarOnGalaxyMap = false;
+            }
+
+            if (star.HasStarBase)
 			{
 				AddIcon(FactionIconPrefab).GetComponent<StarIcon>().SetColor(color);
 				AddStarInfo(star);
@@ -105,7 +121,7 @@ public class Star : MonoBehaviour
                 AddStarBookmark(star);
             }
 
-		    var guardian = star.Occupant;
+            var guardian = star.Occupant;
 		    if (guardian.IsExists)
 		    {
 		        if (guardian.CanBeAggressive)
@@ -114,8 +130,6 @@ public class Star : MonoBehaviour
                     AddIcon(PassiveGuardianIconPrefab);
             }
 
-            var objects = star.Objects;
-
 		    if (objects.Contain(StarObjectType.Event) && star.LocalEvent.IsActive)
 		    {
 		        AddIcon(QuestIconPrefab);
@@ -123,6 +137,11 @@ public class Star : MonoBehaviour
 		    if (objects.Contain(StarObjectType.Survival))
 			{
 				AddIcon(DangerIconPrefab);
+				if (_starMap.ShowSurvivals)
+				{
+					AddIcon(MiniSurvivalIcon);
+					_showMiniStarOnGalaxyMap = false;
+				}
 			}
 			else if (objects.Contain(StarObjectType.Boss) && !star.Boss.IsDefeated)
 			{
@@ -136,6 +155,11 @@ public class Star : MonoBehaviour
 			else if (objects.Contain(StarObjectType.Ruins) && !star.Ruins.IsDefeated)
 			{
 				AddIcon(RuinsIconPrefab);
+				if (_starMap.ShowRuins)
+				{
+					AddIcon(MiniRuinIcon);
+					_showMiniStarOnGalaxyMap = false;
+				}
 			}
             else if (objects.Contain(StarObjectType.Xmas))
             {
@@ -149,7 +173,19 @@ public class Star : MonoBehaviour
             else if (objects.Contain(StarObjectType.Wormhole))
 			{
 				AddIcon(WormholeIconPrefab);
-			}
+                if (_starMap.ShowWormholes)
+                {
+                    var icon = AddIcon(MiniWormholeIcon).GetComponent<StarIcon>();
+                    if (_starData.IsVisited(star.Wormhole.Target)) {
+                        icon.SetColor(Utils.ColorManip.ColorHash(System.Math.Min(_starId, star.Wormhole.Target).ToString()));
+                    }
+                    else
+                    {
+                        icon.SetColor(WormholeIconPrefab.GetComponent<StarIcon>().Color);
+                    }
+                    _showMiniStarOnGalaxyMap = false;
+                }
+            }
 			else if (objects.Contain(StarObjectType.Arena))
 			{
 				AddIcon(ArenaIconPrefab);
@@ -162,6 +198,11 @@ public class Star : MonoBehaviour
             else if (objects.Contain(StarObjectType.Challenge) && !star.Challenge.IsCompleted)
 			{
 				AddIcon(ChallengeIconPrefab);
+				if (_starMap.ShowChallenges)
+				{
+				    AddIcon(MiniChallengeIcon);
+				    _showMiniStarOnGalaxyMap = false;
+				}
 			}
 			//else if (star.HasPointOfInterest(Game.PointOfInterest.Laboratory))
 			//{

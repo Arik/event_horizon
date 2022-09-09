@@ -1,10 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Economy;
+using Economy.Products;
 using Galaxy.StarContent;
 using Game;
+using Game.Exploration;
 using GameDatabase.DataModel;
 using GameModel;
+using GameModel.Quests;
 using GameServices;
 using GameServices.Quests;
 using GameServices.Random;
@@ -37,6 +41,9 @@ namespace Galaxy
         [Inject] private readonly XmasTree _xmas;
         [Inject] private readonly Hive _hive;
 
+        [Inject] private readonly InventoryFactory _inventoryFactory;
+        [Inject] private readonly Planet.Factory _planetFactory;
+
         [Inject]
         public StarData(ISessionData session, SessionDataLoadedSignal dataLoadedSignal, SessionCreatedSignal sessionCreatedSignal)
             : base(dataLoadedSignal, sessionCreatedSignal)
@@ -57,7 +64,74 @@ namespace Galaxy
             _starContentChangedTrigger.Fire(starId);
         }
 
+        public void SetFiltered(int starId)
+        {
+            _filteredstars[starId] = ShouldFilter(starId) && _filter != "";
+            // _starContentChangedTrigger.Fire(starId);
+        }
+
+        private string _filter = "";
+        private Dictionary<int, bool> _filteredstars = new Dictionary<int, bool>();
+
+        public string Filter
+        {
+            get { return _filter; }
+            set
+            {
+                if (value == _filter)
+                    return;
+
+                _filter = value;
+                _filteredstars.Clear();
+            }
+        }
+
+        public bool ShouldFilter(int starId)
+        {
+            if (GetBookmark(starId) == _filter) return true;
+
+            var objects = GetObjects(starId);
+
+            if (new Regex("(\\s|^)terran(\\s|$)").IsMatch(_filter))
+            {
+                foreach (Planet planet in _planetFactory.CreatePlanets(starId))
+                {
+                    if (planet.Type == PlanetType.Terran) return true;
+                }
+            }
+
+            if (new Regex("(\\s|^)event(\\s|$)").IsMatch(_filter))
+            {
+                if (objects.Contain(StarObjectType.Event) && GetLocalEvent(starId).IsActive) return true;
+            }
+
+            if (objects.Contain(StarObjectType.BlackMarket))
+            {
+                foreach (IProduct product in _inventoryFactory.CreateBlackMarketInventory(starId).Items)
+                {
+                    if (new Regex("(\\s|^)("+ product.Type.Name.ToLower() + "|"+ product.Type.Id.ToLower() + ")(\\s|$)").IsMatch(_filter)) return true;
+                }
+            }
+
+            if (HasStarBase(starId))
+            {
+                foreach (IProduct product in _inventoryFactory.CreateFactionInventory(GetRegion(starId)).Items)
+                {
+                    if (new Regex("(\\s|^)(" + product.Type.Name.ToLower() + "|" + product.Type.Id.ToLower() + ")(\\s|$)").IsMatch(_filter)) return true;
+                }
+            }
+
+            return false;
+        }
+
         public bool HasBookmark(int starId) { return _session.StarMap.HasBookmark(starId); }
+
+        public bool IsFiltered(int starId)
+        {
+            if (!_filteredstars.ContainsKey(starId))
+                SetFiltered(starId);
+            return _filteredstars[starId];
+        }
 
         public Region GetRegion(int starId) { return _regionMap.GetStarRegion(starId); }
 

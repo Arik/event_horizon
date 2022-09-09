@@ -26,6 +26,7 @@ namespace Galaxy
         public StarObjects Objects => _starData.GetObjects(_id);
         public bool HasStarBase => _starData.HasStarBase(_id);
         public bool HasBookmark => _starData.HasBookmark(_id);
+        public bool IsFiltered => _starData.IsFiltered(_id);
         public void CaptureBase() { _starData.CaptureBase(_id); }
         public bool IsQuestObjective => _starData.IsQuestObjective(_id);
 

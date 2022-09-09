@@ -250,18 +250,19 @@ namespace Combat.Manager
             if (!enemy.IsActive())
             {
                 _nextShipCooldown += Time.deltaTime;
+               
+                var shipInfo = _combatModel.EnemyFleet.Ships.FirstOrDefault(item => item.Status == ShipStatus.Ready);
+                if (shipInfo == null && _nextShipCooldown > 0.025f)
+                {
+                    _nextShipCooldown = 0;
+                    UnityEngine.Debug.Log("No more ships");
+                    Exit();
+                    return;
+                }
+
                 if (_nextShipCooldown > _nextShipMaxCooldown)
                 {
                     _nextShipCooldown = 0;
-
-                    var shipInfo = _combatModel.EnemyFleet.Ships.FirstOrDefault(item => item.Status == ShipStatus.Ready);
-                    if (shipInfo == null)
-                    {
-                        UnityEngine.Debug.Log("No more ships");
-                        Exit();
-                        return;
-                    }
-
                     CreateShip(shipInfo);
                 }
             }
