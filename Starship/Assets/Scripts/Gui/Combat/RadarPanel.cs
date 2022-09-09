@@ -7,6 +7,8 @@ using Combat.Component.Unit.Classification;
 using Combat.Scene;
 using Services.Reources;
 using Zenject;
+using Combat.Unit.Object;
+using UnityEngine.UI;
 
 namespace Gui.Combat
 {
@@ -29,7 +31,10 @@ namespace Gui.Combat
 
         public void AddBeacon(IUnit unit)
         {
-            (_beaconRadars.FirstOrDefault(item => !item.gameObject.activeSelf) ?? CreateBeaconRadar()).Open(unit, _scene);
+            var beacon = _beaconRadars.FirstOrDefault(item => !item.gameObject.activeSelf) ?? CreateBeaconRadar();
+            if (unit.GetType() == typeof(EnemySpawner))
+                beacon.GetComponent<Image>().color = new Color(0.5f, 0.5f, 1f);
+            beacon.Open(unit, _scene);
         }
 
         public void RemoveBeacon(IUnit unit)
