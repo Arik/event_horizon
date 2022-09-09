@@ -90,6 +90,14 @@ public class Star : MonoBehaviour
 	        _showMiniStarOnGalaxyMap = false;
 	    }
 
+        if (star.IsFiltered)
+        {
+            AddIcon(FilterIconPrefab).GetComponent<StarIcon>().SetColor(color);
+            if (!star.HasStarBase && star.HasBookmark)
+                AddStarBookmark(star);
+            _showMiniStarOnGalaxyMap = false;
+        }
+
         if (star.Id == 0)
 		{
 			AddIcon(HomeIconPrefab);
@@ -101,14 +109,6 @@ public class Star : MonoBehaviour
 			starname.text = string.IsNullOrEmpty(star.Bookmark) ? star.Name : star.Bookmark;
             starname.color = color;
             var objects = star.Objects;
-
-            if (star.IsFiltered)  // TODO: Misses home star
-            {
-                AddIcon(FilterIconPrefab).GetComponent<StarIcon>().SetColor(color);
-                if (!star.HasStarBase && star.HasBookmark)
-                    AddStarBookmark(star);
-                _showMiniStarOnGalaxyMap = false;
-            }
 
             if (star.HasStarBase)
 			{
